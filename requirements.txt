@@ -1,0 +1,6 @@
+lasso-python
+numpy
+glob
+ntpath
+plotly
+sklearn

@@ -1,0 +1,129 @@
+/* Manipulate Data Science Wheel SVG (inlined) */
+svg#data-science-wheel-anim path#wheel-inner-circle {
+    stroke: #73adc3e6 !important;
+    stroke-width: 3px;
+    fill: none;
+    stroke-dasharray: 2;
+    filter: none;
+}
+
+svg#data-science-wheel-anim path#wheel-inner-circle-2 {
+    stroke: white !important;
+    stroke-dasharray: 2 83;
+    stroke-miterlimit: 10;
+    fill: none;
+    stroke-width: 1.1 px;
+    animation: dash2 30s linear infinite;
+}
+
+svg#data-science-wheel-anim path#wheel-inner-circle-arrow {
+    filter: none;
+}
+
+svg#data-science-wheel-anim path#wheel-inner-circle-dot {
+    filter: none;
+}
+
+svg#data-science-wheel-anim #wheel-data-acquisition {
+    filter: blur(0px) drop-shadow(0 0 1px #FFFFFF);
+}
+
+svg#data-science-wheel-anim #wheel-data-acquisition:hover {
+    filter: blur(0px) drop-shadow(0 0 4px #FFFFFF);
+    transform: scale(1.05, 1.05) translate(-1%, -7.5%);
+    /* transition: all .2s ease-in-out; */
+}
+
+svg#data-science-wheel-anim #wheel-storage {
+    filter: blur(0px) drop-shadow(0 0 1px #FFFFFF);
+}
+
+svg#data-science-wheel-anim #wheel-storage:hover {
+    filter: blur(0px) drop-shadow(0 0 4px #FFFFFF);
+    transform: scale(1.05, 1.05) translate(+2%, -5.5%);
+}
+
+svg#data-science-wheel-anim #wheel-ml {
+    filter: blur(0px) drop-shadow(0 0 1px #FFFFFF);
+}
+
+svg#data-science-wheel-anim #wheel-ml:hover {
+    filter: blur(0px) drop-shadow(0 0 4px #FFFFFF);
+    transform: scale(1.05, 1.05) translate(3%, -3.5%);
+}
+
+svg#data-science-wheel-anim #wheel-visualize {
+    filter: blur(0px) drop-shadow(0 0 1px #FFFFFF);
+}
+
+svg#data-science-wheel-anim #wheel-visualize:hover {
+    filter: blur(0px) drop-shadow(0 0 4px #FFFFFF);
+    transform: scale(1.05, 1.05) translate(-1%, -1.5%);
+}
+
+svg#data-science-wheel-anim #wheel-communicate {
+    filter: blur(0px) drop-shadow(0 0 1px #FFFFFF);
+}
+
+svg#data-science-wheel-anim #wheel-communicate:hover {
+    filter: blur(0px) drop-shadow(0 0 4px #FFFFFF);
+    transform: scale(1.05, 1.05) translate(-4%, -3.5%);
+}
+
+svg#data-science-wheel-anim #wheel-deploy {
+    filter: blur(0px) drop-shadow(0 0 1px #FFFFFF);
+}
+
+svg#data-science-wheel-anim #wheel-deploy:hover {
+    filter: blur(0px) drop-shadow(0 0 4px #FFFFFF);
+    transform: scale(1.05, 1.05) translate(-4%, -6.5%);
+}
+
+svg#data-science-wheel-anim #wheel-path-1 {
+    stroke-dasharray: 2 2;
+    stroke-miterlimit: 10;
+    stroke-width: 1.1px;
+    animation: dash2 2.58s linear infinite;
+}
+
+svg#data-science-wheel-anim #wheel-path-2 {
+    stroke-dasharray: 2 2;
+    stroke-miterlimit: 10;
+    stroke-width: 1.1px;
+    animation: dash2 2.58s linear infinite;
+}
+
+svg#data-science-wheel-anim #wheel-path-3 {
+    stroke-dasharray: 2 2;
+    stroke-miterlimit: 10;
+    stroke-width: 1.1px;
+    animation: dash2 2.58s linear infinite;
+}
+
+svg#data-science-wheel-anim #wheel-path-4 {
+    stroke-dasharray: 2 2;
+    stroke-miterlimit: 10;
+    stroke-width: 1.1px;
+    stroke-linecap: round;
+    animation: dash2 2.58s linear infinite;
+}
+
+svg#data-science-wheel-anim #wheel-path-5 {
+    stroke-dasharray: 2 2;
+    stroke-miterlimit: 10;
+    stroke-width: 1.1px;
+    stroke-linecap: round;
+    animation: dash2 2.58s linear infinite;
+}
+
+svg#data-science-wheel-anim #wheel-path-6 {
+    stroke-dasharray: 2 2;
+    stroke-miterlimit: 10;
+    stroke-width: 1.1px;
+    stroke-linecap: round;
+    animation: dash2 2.58s linear infinite;
+}
+
+    /* svg#dsw-1 #wheel-acquisition {
+        filter: blur(0px) drop-shadow(0 0 3px #BFD9FF);
+    } */

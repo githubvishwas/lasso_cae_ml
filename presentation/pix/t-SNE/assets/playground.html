@@ -1,0 +1,292 @@
+<!--
+  Copyright 2018 Google LLC
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+
+<style>
+  #playground {
+    overflow: hidden;
+    font-family: 'Open Sans', sans-serif;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    /*border-bottom: 1px solid rgba(0, 0, 0, 0.1);*/
+    margin-top: 36px;
+    padding: 36px 0 0 0;
+    /*background: #fcfcfc;*/
+    z-index: 1000;
+  }
+
+  #playground * {
+    box-sizing: border-box;
+  }
+
+  #playground.modal {
+    position: fixed;
+    left: 10px;
+    right: 10px;
+    top: 50px;
+  }
+
+  /* Playground Canvas */
+  #playground-canvas {
+    float: left;
+    width: 55%;
+  }
+
+  #playground-canvas canvas {
+    width: 100%;
+  }
+
+  /* Data Menu */
+  #data-menu {
+    /*float: left;*/
+    /*width: 25%*/
+    width: 40%;
+    float: left;
+    margin-bottom: 24px;
+    overflow: hidden;
+    margin-left: 5%;
+  }
+  #data-menu .demo-data {
+    cursor: pointer;
+    position: relative;
+    font-size: 10px;
+    line-height: 1.2em;
+    box-sizing: border-box;
+    float: left;
+    margin: 2px;
+    padding: 4px;
+    width: calc(33% - 4px);
+    background: white;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.08);
+  }
+  @media(min-width: 480px) {
+    #data-menu .demo-data {
+      width: calc(25% - 8px);
+      padding: 8px;
+      margin: 4px;
+    }
+  }
+  @media(min-width: 768px) {
+    #data-menu .demo-data {
+      width: calc(16.5% - 8px);
+      padding: 8px;
+      margin: 4px;
+    }
+  }
+  #data-menu .demo-data:hover {
+  border: 1px solid rgba(0, 0, 0, 0.2);
+
+  }
+  #data-menu .demo-data.selected::after {
+    content: "";
+    border: 2px solid rgba(70, 130, 180, 0.8);
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    box-sizing: border-box;
+    border-radius: 4px;
+  }
+  #data-menu .demo-data span {
+    display: none;
+  }
+  #data-menu .demo-data:hover canvas {
+    opacity: 1;
+  }
+  #data-menu .demo-data canvas {
+    width: 100%;
+    opacity: 0.3;
+  }
+  #data-menu .demo-data.selected canvas {
+    opacity: 1;
+  }
+
+  /* Data Details */
+  #data-details {
+    position: relative;
+  }
+
+  @media(min-width: 768px) {
+    #data-details {
+      width: 40%;
+      float: right;
+    }
+  }
+
+  #data-details #data-controls {
+    width: 40%;
+    float: right;
+    position: relative;
+    overflow: hidden;
+    font-size: 13px;
+  }
+
+  @media(min-width: 768px) {
+    #data-details #data-controls {
+      width: 50%;
+      margin-right: 10%;
+      float: left;
+    }
+  }
+
+  #data-details #play-controls {
+    margin-bottom: 18px;
+    overflow: hidden;
+    position: relative;
+  }
+  #data-details #play-controls button {
+    cursor: pointer;
+    outline: none;
+    border-radius: 50%;
+    background: steelblue;
+    color: white;
+    width: 25%;
+    margin-right: 5%;
+    padding-top: 25%;
+    padding-bottom: 0;
+    border: none;
+    float: left;
+    position: relative;
+  }
+  #play-controls i {
+    display: block;
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    height: 36px;
+    font-size: 24px;
+    line-height: 0;
+  }
+  @media(min-width: 768px) {
+    #play-controls i {
+      font-size: 30px;
+    }
+  }
+  #play-controls #play-pause i {
+    display: none;
+    position: absolute;
+  }
+  #play-controls #play-pause.paused i:nth-child(1) {
+    display: block;
+  }
+  #play-controls #play-pause.playing i:nth-child(2) {
+    display: block;
+  }
+
+  #steps-display {
+    float: left;
+    text-align: center;
+    width: 25%;
+    line-height: 1.5em;
+    font-size: 13px;
+  }
+
+  @media(min-width: 1024px) {
+    #steps-display {
+      font-size: 16px;
+      line-height: 1.6em;
+    }
+  }
+  #data-details #data-description {
+    width: 50%;
+    margin-right: 10%;
+    float: right;
+    font-size: 14px;
+    line-height: 1.6em;
+  }
+
+  @media(min-width: 768px) {
+    #data-details #data-description {
+      width: 40%;
+      float: left;
+      margin-right: 0;
+    }
+  }
+
+  /* Options */
+  #data-details #options {
+    float: left;
+    padding-left: 36px;
+    font-size: 13px;
+    line-height: 1.5em;
+    width: 45%;
+  }
+  #data-details input {
+    display: block;
+    width: 100%;
+    margin: 8px 0 16px 0;
+  }
+
+  #options #data-options {
+    width: 45%;
+    margin-left: 4px;
+  }
+  #options #tsne-options {
+    width: 45%;
+    margin-left: 4px;
+  }
+
+  #data-details #share {
+    margin-top: 8px;
+    display: block;
+    color: rgba(0, 0, 0, 0.4);
+    text-decoration: none;
+    font-size: 12px;
+  }
+
+  #data-details #share:hover {
+    text-decoration: underline;
+  }
+
+  #data-details #share i {
+    line-height: 0px;
+    position: relative;
+    top: 7px;
+  }
+
+</style>
+<div id="playground">
+
+  <div id="playground-canvas">
+    <canvas id="output" width=600 height=600></canvas>
+  </div>
+
+  <div id="data-menu"></div>
+
+  <div id="data-details">
+    <div id="data-controls">
+      <div id="play-controls">
+        <button id="play-pause"><i class="material-icons">play_arrow</i><i class="material-icons">pause</i></button>
+        <button id="restart"><i class="material-icons">refresh</i></button>
+        <div id="steps-display">
+          Step<br><span id="step"></span>
+        </div>
+      </div>
+      <div id="data-options"></div>
+      <div id="tsne-options"></div>
+    </div>
+    <div id="data-description">
+      <span></span>
+      <a id="share" style="display:none;"><i class="material-icons">link</i> Share this view</a>
+    </div>
+  </div>
+
+
+</div>
+<script src="assets/playground.js"></script>
+

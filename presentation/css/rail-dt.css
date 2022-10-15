@@ -1,0 +1,17 @@
+svg#rail-dt polygon {
+    border: 0px solid black;
+}
+
+
+svg#rail-dt polygon.tree-node {
+    fill: rgba(0, 0, 0, 0);
+    fill-opacity: 1;
+    /* stroke: #ffffff; */
+    /* stroke-width: 1px; */
+}
+
+svg#rail-dt polygon.tree-node:hover {
+    filter: blur(0px) drop-shadow(0 0 10px rgb(255, 102, 102));
+    stroke: red;
+    stroke-width: 2px;
+}

@@ -1,0 +1,899 @@
+<!doctype html>
+<html lang="en" prefix="og: http://ogp.me/ns#">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- SEO -->
+  <title>LASSO Machine Learning Training</title>
+  <meta name="description" content="">
+
+  <!-- Google Fonts -->
+  <link
+    href="https://fonts.googleapis.com/css?family=Roboto:100,100i,300,300i,400,400i,700,700i%7CMaitree:200,300,400,600,700&amp;subset=latin-ext"
+    rel="stylesheet">
+
+  <!-- CSS WebSlides -->
+  <link rel="stylesheet" type='text/css' media='all' href="./css/webslides.css">
+
+  <!-- Typewriter -->
+  <script src="./js/typewriter.min.js"></script>
+
+  <!-- JQUERY -->
+  <script src="./js/jquery.min.js "></script>
+
+  <!-- PLOTLY -->
+  <script src="./js/plotly-latest.min.js"></script>
+
+  <!-- HIGHLIGHTS (code highlighting) -->
+  <link rel="stylesheet" href="./css/highlight.css">
+  <script src="./js/highlight.min.js"></script>
+
+  <link rel="stylesheet" href="./css/lasso.css">
+
+  <script>
+    // utility functions
+
+    // load an iframe
+    function loadIFrame(parentId, iframePath, width, height) {
+
+      let ifrDiv = document.getElementById(parentId);
+      let ifr = document.createElement("iframe");
+      ifr.width = width;
+      ifr.height = height;
+      ifr.src = iframePath;
+
+      Array.prototype.forEach.call(ifrDiv.children, elem => elem.style.display = 'none');
+      // ifrDiv.childNodes.forEach(elem => elem.style.visibility = 'hidden!');
+      ifrDiv.appendChild(ifr);
+    }
+  </script>
+
+</head>
+
+<body>
+
+  <main role="main">
+    <article id="webslides" class="horizontal">
+
+      <!-- SLIDE -->
+      <section>
+
+        <div class="bg-apple" height="100%" width="100%" id="particle-slide" style="  
+          position: absolute;
+          display:  block;
+          top: 0px;
+          bottom: 0px;
+          height: 100%;
+          width: 100%;">
+        </div>
+
+        <div class="wrap aligncenter main-title-div">
+
+          <div style="height: 110px;">
+            <img style="height:100%" src="./pix/lasso_logo1.svg">
+          </div>
+          <br>
+          <div>
+            <h1 class="border-radius-20">
+              Unsupervised Learning for CAE
+            </h1>
+            <br>
+            <div>
+              <p class="text-intro">
+                Leinfelden - 1st of March 2021 <br>Dr.-Ing. Constantin Diez &amp; Pascoe Scholle
+              </p>
+            </div>
+          </div>
+
+        </div>
+
+      </section>
+
+      <!-- SLIDE -->
+      <section class="bg-apple">
+        <div class="wrap size-50 txt-center">
+          <h1>
+            <strong>What is Unsupervised Learning?</strong>
+          </h1>
+        </div>
+      </section>
+
+      <!-- SLIDE -->
+      <section class="bg-apple">
+        <div class="wrap center-items-flex size-50">
+          <blockquote class="text-quote">
+            <p class="txt-center">
+              Unsupervised Learning means to process data without specifying anything about the outcome of the process
+            </p>
+          </blockquote>
+        </div>
+      </section>
+
+      <!-- SLIDE -->
+      <section class="bg-apple">
+        <div class="wrap grid vertical-align">
+          <div class="column">
+            <h1 class="txt-center">
+              Unsupervised Learning
+            </h1>
+          </div>
+          <div class="column">
+            <table>
+              <tr>
+                <td>Method</td>
+                <td>Goal</td>
+                <td>Result</td>
+              </tr>
+              <tr>
+                <td>Dimensionality Reduction</td>
+                <td>Find patterns in data</td>
+                <td>Low-Dimensional Embedding</td>
+              </tr>
+              <tr>
+                <td>Clustering</td>
+                <td>Find similar groups</td>
+                <td>Grouping of samples</td>
+              </tr>
+              <tr>
+                <td>Prediction</td>
+                <td>Predict inputs itself</td>
+                <td>Predictor</td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- SLIDE -->
+      <section class="bg-apple">
+        <div class="wrap size-50 txt-center">
+          <h1>
+            <strong>Topic #1: Simulation Embeddings</strong>
+          </h1>
+        </div>
+      </section>
+
+      <!-- SLIDE -->
+      <section class="bg-apple">
+        <div class="size-80 grid sm">
+          <div class="column center-items-margin">
+            <h1 class="txt-center"><strong>
+                Dimensionality Reduction
+              </strong></h1>
+            <hr>
+            <p>Reduce data while preserving most important information.</p>
+          </div>
+
+          <div class="column center-items-margin">
+            <img src="./pix/eq_reduction.svg" />
+          </div>
+
+        </div>
+      </section>
+
+      <!-- SLIDE -->
+      <section class="bg-apple">
+        <div class="wrap size-85 grid vertical-align">
+          <div class="column txt-center">
+            <h1>
+              <strong>Example Swiss Roll</strong>
+            </h1>
+            <p>3-dimensional data with 2-dimensional nature.</p>
+          </div>
+          <div class="column">
+            <div id="swiss-roll-plot">
+              <button onClick='loadIFrame("swiss-roll-plot","./pix/swiss-roll/Swiss-Roll.html","100%","750px")'>
+                Load App
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- SLIDE -->
+      <section class="bg-apple">
+        <div class="warp vertical-align grid size-75">
+          <div class="column">
+            <h1><strong>Example Case MNIST</strong></h1>
+            <hr>
+            <p>60k handwritten numbers</p>
+            <p>1 Image = 28 x 28 Pixels = 784 Dimensions</p>
+          </div>
+          <div class="column">
+            <img src="./pix/minst-examples.png" />
+          </div>
+        </div>
+      </section>
+
+      <!-- SLIDE -->
+      <section class="bg-apple">
+        <div class="warp vertical-align grid size-75">
+          <div class="column">
+            <h1><strong>Example Case MNIST</strong></h1>
+            <hr>
+            <p>Reduction with t-SNE</p>
+            <ol style="list-style: square;">
+              <li>Distance: KL-Divergence</li>
+              <li>Models data as probability distribution</li>
+              <li>Information preservation: Similarity of probability distribibutions must be same in high and
+                low-dimension space</li>
+            </ol>
+          </div>
+          <div class="column">
+            <div id="mnist-example-plot">
+              <button onClick='loadIFrame("mnist-example-plot","./pix/mnist/index.html","100%","750px")'>
+                Load Graph
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SLIDE -->
+      <section class="bg-apple">
+        <div class="wrap size-50 txt-center">
+          <h1>
+            <strong>What is the criterion for reduction?</strong>
+          </h1>
+        </div>
+      </section>
+
+      <!-- SLIDE -->
+      <section class="bg-apple">
+        <div class="wrap center-items-flex size-50">
+          <blockquote class="text-quote">
+            <p class="txt-center">
+              Reduce dimensions but keep the most important information
+            </p>
+          </blockquote>
+        </div>
+      </section>
+
+      <!-- SLIDE -->
+      <section class="bg-apple">
+        <div class="wrap size-50 txt-center">
+          <h1>
+            <strong>What does that mean?</strong>
+          </h1>
+        </div>
+      </section>
+
+      <!-- SLIDE -->
+      <section class="bg-apple">
+        <div class="grid size-60 vertical-align">
+          <div class=" column center-items-margin">
+            <h1>
+              <strong>Information Preservation</strong>
+            </h1>
+          </div>
+          <div class="column">
+            <p>
+              Distances in high-dimensional space need to be kept in
+              Low-dimensional space (according to some information metric).
+            </p>
+            <p>
+              Largest distances are preserved well
+              <br>
+              &rightarrow; most important information is kept
+            </p>
+            <p>
+              The metric defines what is important and what not!!!!!
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- SLIDE -->
+      <section class="bg-apple">
+        <div class="wrap size-50 txt-center">
+          <h1>
+            <strong>What metrics for information loss exist?</strong>
+          </h1>
+        </div>
+      </section>
+
+      <!-- SLIDE -->
+      <section class="bg-apple">
+        <div class="grid size-60 vertical-align">
+          <div class=" column center-items-margin">
+            <h1>
+              <strong>
+                Information Loss Metrics
+              </strong>
+            </h1>
+          </div>
+          <div class="column">
+            <ul style="list-style: square;">
+
+              <li>
+                <strong>Vectors</strong>
+                <br>
+                <ul>
+                  <li>Euclidean Distance</li>
+                  <li>Dot Product</li>
+                  <li>Mahalanobis Distance</li>
+                </ul>
+              </li>
+
+              <li style="margin-top: 1.5em">
+                <strong>Probability Distributions</strong>
+                <br>
+                <ul>
+                  <li>Jensen-Shannon Divergence</li>
+                  <li>KL-Divergence</li>
+                  <li>Wasserstein Distance</li>
+                </ul>
+              </li>
+
+              <li style="margin-top: 1.5em">
+                <strong>Sets</strong>
+                <br>
+                <ul>
+                  <li>Jaccard Index</li>
+                  <li>Sørensen–Dice coefficient</li>
+                </ul>
+              </li>
+
+              <li style="margin-top: 1.5em">
+                <strong>Text</strong>
+                <br>
+                <ul>
+                  <li>Hamming Distance</li>
+                  <li>Levenshtein distance</li>
+                </ul>
+              </li>
+
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- SLIDE -->
+      <section class="bg-apple">
+        <div class="wrap size-50 txt-center">
+          <h1>
+            <strong>What reduction algorithms exist?</strong>
+          </h1>
+        </div>
+      </section>
+
+      <!-- SLIDE -->
+      <section class="bg-apple">
+
+        <div class="wrap vertical-align size-75 grid">
+          <div class="column txt-center">
+            <h1><strong>Dimension Reduction Algorithms</strong></h1>
+          </div>
+          <div class="column center-items-flex">
+            <ol class="list-marker-square">
+              <li>(Kernel) PCA</li>
+              <li>Isomap</li>
+              <li>Locally Linear Embedding (LLE)</li>
+              <li>Multi-dimensional Scaling (MDS)</li>
+              <li>t-distributed Stochastic Neighbor Embedding (t-SNE)</li>
+              <li>Graph Laplacian</li>
+              <li>
+                Neural Networks
+                <ol style="list-style: circle;">
+                  <li>Autoencoder</li>
+                  <li>Convolutional Autoencoder</li>
+                  <li>Generative Adversarial Networks</li>
+                  <li>Graph (Convolutional) Neural Network (GNN)</li>
+                </ol>
+              </li>
+            </ol>
+          </div>
+        </div>
+      </section>
+
+      <!-- SLIDE -->
+      <section class="bg-apple">
+        <div class="grid size-80 ">
+          <div class=" column center-items-margin">
+            <h1>
+              <strong>Principal Component Analysis</strong>
+            </h1>
+            <hr>
+            <p>Reduce dimensions by keeping largest variance in data</p>
+
+            <h4>Existing Tools:</h4>
+            <ol style="list-style: square;">
+              <li>Diffcrash</li>
+              <li>Femzip</li>
+              <li>ODYSSEE</li>
+            </ol>
+          </div>
+          <div class="column">
+            <img src="./pix/pca_scatterplot.webp" />
+          </div>
+        </div>
+      </section>
+
+      <!-- SLIDE -->
+      <section class="bg-apple">
+        <div class="wrap txt-center" id="3d-embedding-rail">
+          <button onClick='loadIFrame("3d-embedding-rail","./pix/embedding-rail/index.html","70%","720px")'>
+            Load Embedding
+          </button>
+        </div>
+      </section>
+
+      <!-- SLIDE -->
+      <section class="bg-apple">
+        <div class="wrap size-50 txt-center">
+          <h1>
+            <strong>What other algorithms do exist?</strong>
+          </h1>
+        </div>
+      </section>
+
+      <!-- SLIDE -->
+      <section class="bg-apple">
+        <div class="grid size-80 sm">
+          <div class=" column center-items-margin">
+            <h1>
+              <strong>Basic Reduction Methods</strong>
+            </h1>
+          </div>
+          <div class="column">
+            <img src="./pix/reduction-methods-examples.png" />
+            <p>From <a
+                href="https://scikit-learn.org/stable/auto_examples/manifold/plot_compare_methods.html#comparison-of-manifold-learning-methods">sklearn
+                docs</a></p>
+          </div>
+        </div>
+      </section>
+
+      <!-- SLIDE -->
+      <section class="bg-apple">
+        <div class="grid size-80 sm">
+          <div class=" column center-items-margin">
+            <h1>
+              <strong>Autoencoder Reduction</strong>
+            </h1>
+            <p>
+              Autoencoder reproduce the input but must condense
+              meaningful features in the thin layers inbetween.
+            </p>
+          </div>
+          <div class="column">
+            <img src="./pix/neural-networks-ae-meshes-ranjan.PNG" />
+            <p style="font-size: small;">
+              A. Ranjan, T. Bolkart, S. Sanyal, M. J. Black : Generating 3D faces using Convolutional Mesh Autoencoders
+              Proceedings European Conference on Computer Vision (ECCV), Munich, 2018.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- SLIDE -->
+      <section class="bg-apple">
+        <div class="wrap size-70 txt-center">
+          <img src="./pix/neural-networks-ae-meshes-ranjan-2.PNG" />
+          <p>
+            Sampling from the latent space (narrowest layer) of the mesh
+            autoencoder around the mean face j = 0 along 3 different components.
+            A single PC shows "mixed" behaviour of changing the face in a humanly
+            hard to describe manner.
+          </p>
+        </div>
+      </section>
+
+      <!-- SLIDE -->
+      <section class="bg-apple">
+        <div class="wrap size-70 txt-center" id="tsne-app">
+          <h1><strong>t-SNE</strong></h1>
+          <hr>
+          <button onClick='loadIFrame("tsne-app","./pix/t-SNE/index.html","100%","750px")'>
+            Load Graph
+          </button>
+        </div>
+      </section>
+
+      <!-- SLIDE -->
+      <section class="bg-apple">
+        <div class="wrap size-70 txt-center" id="tsne-app">
+          <h1><strong>Exercise 1 - Dimensionality Reduction Basics</strong></h1>
+        </div>
+      </section>
+
+      <!-- SLIDE -->
+      <section class="bg-apple">
+        <div class="wrap size-50 txt-center" id="tsne-app">
+          <h1><strong>Topic #2: Embedding Difficulties</strong></h1>
+        </div>
+      </section>
+
+      <!-- SLIDE -->
+      <section class="bg-apple">
+        <div class="grid size-60">
+          <div class=" column center-items-margin">
+            <h1>
+              <strong>Incompatible Meshes</strong>
+            </h1>
+          </div>
+          <div class="column">
+            <p>
+              <h5>Difficulty Levels</h5>
+              <ol>
+                <li>Rougher, finer and remeshed Meshes</li>
+                <li>Different geometric sizes (holes, width, ...)</li>
+                <li>Different topology (hole/no hole, additional rib, ...)</li>
+                <li>Strong morphing of components</li>
+                <li>Different parts in a substructure (replace parts)</li>
+                <li>Different substructures (compare car A vs. car B)</li>
+              </ol>
+            </p>
+            <hr>
+            <h5>Solution Approaches</h5>
+            <p>
+              1-3: Nearest Neighbor Mapping
+              <br>
+              4-5: Advanced Mapping or Projection Schema
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- SLIDE -->
+      <section class="bg-apple">
+        <div class="grid size-60">
+          <div class=" column center-items-margin">
+            <h1>
+              <strong>Different Mesh Resolutions</strong>
+            </h1>
+            <p>Advice: Rougher mesh as baseline</p>
+          </div>
+          <div class="column">
+            <img class="shadow-blue-4" src="./pix/meshing-differences.gif" />
+          </div>
+        </div>
+      </section>
+
+      <!-- SLIDE -->
+      <section class="bg-apple">
+        <div class="grid size-70">
+          <div class=" column center-items-margin">
+            <h1>
+              <strong>Different Geometric Sizes</strong>
+            </h1>
+            <p>
+              Advice: Take geometry with best coverage (smallest holes) as baseline (100% model)
+            </p>
+          </div>
+          <div class="column">
+            <img class="shadow-blue-4" src="./pix/feature-differences.gif" />
+          </div>
+        </div>
+      </section>
+
+      <!-- SLIDE -->
+      <section class="bg-apple">
+        <div class="grid size-70">
+          <div class=" column center-items-margin">
+            <h1>
+              <strong>Topology Differences</strong>
+            </h1>
+            <p>
+              <h5>Nearest Neighbor Mapping:</h5>
+              <p>
+                Take as reference a 150% model
+              </p>
+              <h5>
+                Advanced Mapping:
+              </h5>
+              <p>
+                Map region to region
+              </p>
+              <h5>
+                Projection Schema:
+              </h5>
+              <p>
+                Project data on something comparable(line, surface, box, sphere)
+              </p>
+            </p>
+          </div>
+          <div class="column">
+            <img style="height: 50vh;" src="./pix/topology-differences.svg" />
+          </div>
+        </div>
+      </section>
+
+      <!-- SLIDE -->
+      <section class="bg-apple">
+        <div class="grid size-70">
+          <div class=" column center-items-margin">
+            <h1>
+              <strong>Large Morphing</strong>
+            </h1>
+            <p>
+              <h5>
+                Nearest Neighbor Mapping:
+              </h5>
+              <p>Fails</p>
+
+              <h5>
+                Advanced Mapping:
+              </h5>
+              <p>
+                Map region to region possible
+              </p>
+
+              <h5>
+                Projection Schema:
+              </h5>
+              <p>
+                Works only for moderate morphings
+              </p>
+
+              <h5>
+                Neural Networks:
+              </h5>
+              <p>
+                Doable if a component is analyzed from geometric patches but results vary
+              </p>
+            </p>
+          </div>
+          <div class="column">
+            <img class="shadow-blue-4" src="./pix/morphing-animation.gif" />
+          </div>
+        </div>
+      </section>
+
+      <!-- SLIDE -->
+      <section class="bg-apple">
+        <div class="grid size-70">
+          <div class=" column center-items-margin">
+            <h1>
+              <strong>Large Morphing</strong>
+            </h1>
+            <p>
+              <h5>
+                Nearest Neighbor Mapping:
+              </h5>
+              <p>Fails</p>
+
+              <h5>
+                Advanced Mapping:
+              </h5>
+              <p>
+                Map region to region possible
+              </p>
+
+              <h5>
+                Projection Schema:
+              </h5>
+              <p>
+                Works only for moderate morphings
+              </p>
+
+              <h5>
+                Neural Networks:
+              </h5>
+              <p>
+                Doable if a component is analyzed from geometric patches but results vary
+              </p>
+            </p>
+          </div>
+          <div class="column">
+            <img style="height: 50vh" src="./pix/large-morphing-mapping.svg" />
+          </div>
+        </div>
+      </section>
+
+      <section class="bg-apple">
+        <div class="wrap vertical-align grid size-80">
+          <div class="column">
+            <h1><strong>Different Substructures</strong></h1>
+            <img src="./pix/frame-silverado.jpg" />
+          </div>
+          <div class="column">
+            <img src="./pix/frame-accord.png" />
+          </div>
+        </div>
+      </section>
+
+      <section class="bg-apple">
+        <div class="wrap vertical-align size-80">
+          <h1 class="txt-center"><strong>What solutions exist?</strong></h1>
+        </div>
+      </section>
+
+      <section class="bg-apple">
+        <div class="wrap vertical-align grid size-80">
+          <div class="column">
+            <h1><strong>Solutions for Different Meshes</strong></h1>
+          </div>
+          <div class="column">
+            <ol>
+              <li>Nearest Neighbor Mapping</li>
+              <li>Advanced Mapping Techniques</li>
+              <li>Neural Networks with Feature Maps</li>
+            </ol>
+          </div>
+        </div>
+      </section>
+
+      <section class="bg-apple">
+        <div class="wrap vertical-align grid size-80">
+          <div class="column">
+            <h1><strong>Nearest Neighbor Mapping</strong></h1>
+            <hr>
+            <h5>Easiest:</h5>
+            <p>Transfer value to closest point
+              <br>
+              Roughly same element size
+            </p>
+
+            <h5>Medium:</h5>
+            <p>Map according to weighted distance<br>
+              Large element size differences </p>
+
+            <h5>Hardest:</h5>
+            <p>Map according to Ansatzfunction<br>
+              Large element size differences</p>
+          </div>
+          <div class="column">
+            <img style="height: 50vh" src="./pix/knn-mapping.svg" />
+          </div>
+        </div>
+      </section>
+
+      <section class="bg-apple">
+        <div class="wrap vertical-align grid size-60">
+          <div class="column">
+            <h1><strong>Advanced Mapping Techniques</strong></h1>
+            <p>Mapping through for example spectral descriptors can align two deformed geometries according to
+              feature points</p>
+          </div>
+          <div class="column" style="display flex; justify-content: center; align-items: center;">
+            <img style="height: 650px; width: 200px;" src="./pix/advanced-mapping-nn.png" />
+            <p style="font-size: 14px;">Deep Spectral Descriptors: Learning the point-wise correspondence metric via
+              Siamese deep neural networks, Z. Sun et al., 2018
+            </p>
+          </div>
+        </div>
+      </section>
+
+
+    </article>
+  </main> <!-- end main -->
+
+  <!-- Required -->
+  <script src="js/webslides.js "></script>
+  <script src="js/webslides-animation.js"></script>
+  <script>
+    window.ws = new WebSlides();
+    new WebSlidesAnimation(window.ws);
+  </script>
+
+  <script src="./js/particles.min.js"></script>
+  <script>
+    const options = {
+      "particles": {
+        "number": {
+          "value": 80,
+          "density": {
+            "enable": true,
+            "value_area": 800
+          }
+        },
+        "color": {
+          //"value": "#030eb9"
+          "value": "#ffffff"
+        },
+        "shape": {
+          "type": "circle",
+          "stroke": {
+            "width": 0,
+            // "color": "#000000"
+            "color": "#ffffff"
+          },
+          "polygon": {
+            "nb_sides": 5
+          },
+          "image": {
+            "src": "img/github.svg",
+            "width": 100,
+            "height": 100
+          }
+        },
+        "opacity": {
+          "value": 0.5,
+          "random": false,
+          "anim": {
+            "enable": false,
+            "speed": 1,
+            "opacity_min": 0.1,
+            "sync": false
+          }
+        },
+        "size": {
+          "value": 4,
+          "random": true,
+          "anim": {
+            "enable": false,
+            "speed": 40,
+            "size_min": 0.1,
+            "sync": false
+          }
+        },
+        "line_linked": {
+          "enable": true,
+          "distance": 150,
+          // "color": "#000000",
+          "color": "#ffffff",
+          "opacity": 0.4,
+          "width": 1
+        },
+        "move": {
+          "enable": true,
+          "speed": 6,
+          "direction": "none",
+          "random": false,
+          "straight": false,
+          "out_mode": "out",
+          "bounce": false,
+          "attract": {
+            "enable": false,
+            "rotateX": 600,
+            "rotateY": 1200
+          }
+        }
+      },
+      "interactivity": {
+        "detect_on": "canvas",
+        "events": {
+          "onhover": {
+            "enable": false,
+            "mode": "repulse"
+          },
+          "onclick": {
+            "enable": false,
+            "mode": "push"
+          },
+          "resize": true
+        },
+        "modes": {
+          "grab": {
+            "distance": 400,
+            "line_linked": {
+              "opacity": 1
+            }
+          },
+          "bubble": {
+            "distance": 400,
+            "size": 40,
+            "duration": 2,
+            "opacity": 8,
+            "speed": 3
+          },
+          "repulse": {
+            "distance": 200,
+            "duration": 0.4
+          },
+          "push": {
+            "particles_nb": 4
+          },
+          "remove": {
+            "particles_nb": 2
+          }
+        }
+      },
+      "retina_detect": true
+    }
+
+    window.onload = function () {
+      particlesJS('particle-slide', options);
+    };
+  </script>
+
+  <!-- OPTIONAL - svg-icons.js (fontastic.me - Font Awesome as svg icons) -->
+  <script defer src="static/js/svg-icons.js "></script>
+
+</body>
+
+</html>

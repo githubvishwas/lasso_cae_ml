@@ -1,0 +1,1919 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <link href="material-icons.css" rel="stylesheet">
+
+    <script src="assets/d3.min.js"></script>
+    <script src="assets/tsne.js"></script>
+    <script src="assets/demo-configs.js"></script>
+    <script src="assets/figure-configs.js"></script>
+    <script src="assets/visualize.js"></script>
+    <script src="assets/figures.js"></script>
+
+    <style>
+        /* Resets */
+
+        input[type=range] {
+            -webkit-appearance: none;
+            /* Hides the slider so that custom slider can be made */
+            width: 100%;
+            /* Specific width is required for Firefox. */
+            background: transparent;
+            /* Otherwise white in Chrome */
+            color: white;
+            background: white;
+            border-radius: 1em;
+            padding-left: 1em;
+            padding-right: 1em;
+        }
+
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+        }
+
+        input[type=range]:focus {
+            outline: none;
+            /* Removes the blue border. You should probably do some kind of focus styling for accessibility reasons though. */
+        }
+
+        input[type=range]::-ms-track {
+            width: 100%;
+            cursor: pointer;
+
+            /* Hides the slider so custom styles can be added */
+            background: transparent;
+            border-color: transparent;
+            color: transparent;
+        }
+
+        /* Thumb */
+
+        /* Special styling for WebKit/Blink */
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 14px;
+            width: 14px;
+            border-radius: 50%;
+            background: steelblue;
+            cursor: pointer;
+            margin-top: -6px;
+            /* You need to specify a margin in Chrome, but in Firefox and IE it is automatic */
+        }
+
+        /* All the same stuff for Firefox */
+        input[type=range]::-moz-range-thumb {
+            height: 14px;
+            width: 14px;
+            border-radius: 50%;
+            background: steelblue;
+            cursor: pointer;
+            border: none;
+        }
+
+        /* All the same stuff for IE */
+        input[type=range]::-ms-thumb {
+            height: 14px;
+            width: 14px;
+            border-radius: 50%;
+            background: grey;
+            cursor: pointer;
+        }
+
+        /* Track */
+
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 3px;
+            cursor: pointer;
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 2px;
+            border: none;
+        }
+
+        input[type=range]:focus::-webkit-slider-runnable-track {
+            background: rgba(0, 0, 0, 0.15);
+        }
+
+        input[type=range]::-moz-range-track {
+            width: 100%;
+            height: 3px;
+            cursor: pointer;
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 2px;
+            border: none;
+        }
+
+        input[type=range]::-ms-track {
+            width: 100%;
+            height: 3px;
+            cursor: pointer;
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 2px;
+            border: none;
+        }
+
+        input[type=range]::-ms-fill-lower {
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        input[type=range]:focus::-ms-fill-lower {
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        input[type=range]::-ms-fill-upper {
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        input[type=range]:focus::-ms-fill-upper {
+            background: rgba(0, 0, 0, 0.1);
+        }
+    </style>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        html {
+            font: 400 16px/1.55em -apple-system, BlinkMacSystemFont, "Roboto", Helvetica, sans-serif;
+            /*background-color: hsl(223, 9%, 25%);*/
+            -ms-text-size-adjust: 100%;
+            -webkit-text-size-adjust: 100%;
+            text-size-adjust: 100%;
+        }
+
+        body {
+            margin: 0;
+            /*background-color: hsl(223, 9%, 25%);*/
+        }
+
+        i {
+            font-variant: normal;
+        }
+
+        a {
+            color: white;
+        }
+
+        figure {
+            margin: 0;
+        }
+
+        h1 {
+            font-family: Cochin, Georgia, serif;
+        }
+
+        .l-body,
+        .l-body-outset,
+        .l-page,
+        .l-page-outset,
+        .l-middle,
+        .l-middle-outset,
+        dt-article>div,
+        dt-article>p,
+        dt-article>h1,
+        dt-article>h2,
+        dt-article>h3,
+        dt-article>h4,
+        dt-article>figure,
+        dt-article>table,
+        dt-article>ol,
+        dt-article>ul,
+        dt-article>dt-byline,
+        dt-article>dt-math,
+        dt-article>dt-code,
+        dt-article section>div,
+        dt-article section>p,
+        dt-article section>h1,
+        dt-article section>h2,
+        dt-article section>h3,
+        dt-article section>h4,
+        dt-article section>figure,
+        dt-article section>table,
+        dt-article section>ol,
+        dt-article section>ul,
+        dt-article section>dt-byline,
+        dt-article section>dt-code {
+            width: auto;
+            margin-left: 24px;
+            margin-right: 24px;
+            box-sizing: border-box;
+        }
+
+        @media(min-width: 768px) {
+
+            .l-body,
+            .l-body-outset,
+            .l-page,
+            .l-page-outset,
+            .l-middle,
+            .l-middle-outset,
+            dt-article>div,
+            dt-article>p,
+            dt-article>h1,
+            dt-article>h2,
+            dt-article>h3,
+            dt-article>h4,
+            dt-article>figure,
+            dt-article>table,
+            dt-article>ol,
+            dt-article>ul,
+            dt-article>dt-byline,
+            dt-article>dt-math,
+            dt-article>dt-code,
+            dt-article section>div,
+            dt-article section>p,
+            dt-article section>h1,
+            dt-article section>h2,
+            dt-article section>h3,
+            dt-article section>h4,
+            dt-article section>figure,
+            dt-article section>table,
+            dt-article section>ol,
+            dt-article section>ul,
+            dt-article section>dt-byline,
+            dt-article section>dt-code {
+                margin-left: 72px;
+                margin-right: 72px;
+            }
+        }
+
+        @media(min-width: 1080px) {
+
+            .l-body,
+            dt-article>div,
+            dt-article>p,
+            dt-article>h2,
+            dt-article>h3,
+            dt-article>h4,
+            dt-article>figure,
+            dt-article>table,
+            dt-article>ol,
+            dt-article>ul,
+            dt-article>dt-byline,
+            dt-article>dt-math,
+            dt-article>dt-code,
+            dt-article section>div,
+            dt-article section>p,
+            dt-article section>h2,
+            dt-article section>h3,
+            dt-article section>h4,
+            dt-article section>figure,
+            dt-article section>table,
+            dt-article section>ol,
+            dt-article section>ul,
+            dt-article section>dt-byline,
+            dt-article section>dt-code {
+                margin-left: calc(50% - 984px / 2);
+                width: 648px;
+            }
+
+            .l-body-outset,
+            dt-article .l-body-outset {
+                margin-left: calc(50% - 984px / 2 - 96px/2);
+                width: calc(648px + 96px);
+            }
+
+            .l-middle,
+            dt-article .l-middle {
+                width: 816px;
+                margin-left: calc(50% - 984px / 2);
+                margin-right: auto;
+            }
+
+            .l-middle-outset,
+            dt-article .l-middle-outset {
+                width: calc(816px + 96px);
+                margin-left: calc(50% - 984px / 2 - 48px);
+                margin-right: auto;
+            }
+
+            dt-article>h1,
+            dt-article section>h1,
+            .l-page,
+            dt-article .l-page,
+            dt-article.centered .l-page {
+                width: 984px;
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+            .l-page-outset,
+            dt-article .l-page-outset,
+            dt-article.centered .l-page-outset {
+                width: 1080px;
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+            .l-screen,
+            dt-article .l-screen,
+            dt-article.centered .l-screen {
+                margin-left: auto;
+                margin-right: auto;
+                width: auto;
+            }
+
+            .l-screen-inset,
+            dt-article .l-screen-inset,
+            dt-article.centered .l-screen-inset {
+                margin-left: 24px;
+                margin-right: 24px;
+                width: auto;
+            }
+
+            .l-gutter,
+            dt-article .l-gutter {
+                clear: both;
+                float: right;
+                margin-top: 0;
+                margin-left: 24px;
+                margin-right: calc((100vw - 984px) / 2 + 168px);
+                width: calc((984px - 648px) / 2 - 24px);
+            }
+
+            /* Side */
+            .side.l-body,
+            dt-article .side.l-body {
+                clear: both;
+                float: right;
+                margin-top: 0;
+                margin-left: 48px;
+                margin-right: calc((100vw - 984px + 648px) / 2);
+                width: calc(648px / 2 - 24px - 84px);
+            }
+
+            .side.l-body-outset,
+            dt-article .side.l-body-outset {
+                clear: both;
+                float: right;
+                margin-top: 0;
+                margin-left: 48px;
+                margin-right: calc((100vw - 984px + 648px - 48px) / 2);
+                width: calc(648px / 2 - 48px + 24px);
+            }
+
+            .side.l-middle,
+            dt-article .side.l-middle {
+                clear: both;
+                float: right;
+                width: calc(456px - 84px);
+                margin-left: 48px;
+                margin-right: calc((100vw - 984px) / 2 + 168px);
+            }
+
+            .side.l-middle-outset,
+            dt-article .side.l-middle-outset {
+                clear: both;
+                float: right;
+                width: 456px;
+                margin-left: 48px;
+                margin-right: calc((100vw - 984px) / 2 + 168px);
+            }
+
+            .side.l-page,
+            dt-article .side.l-page {
+                clear: both;
+                float: right;
+                margin-left: 48px;
+                width: calc(624px - 84px);
+                margin-right: calc((100vw - 984px) / 2);
+            }
+
+            .side.l-page-outset,
+            dt-article .side.l-page-outset {
+                clear: both;
+                float: right;
+                width: 624px;
+                margin-right: calc((100vw - 984px) / 2);
+            }
+        }
+
+        /* Centered */
+
+        @media(min-width: 1080px) {
+
+            .centered .l-body,
+            .centered.l-body,
+            dt-article.centered>div,
+            dt-article.centered>p,
+            dt-article.centered>h2,
+            dt-article.centered>h3,
+            dt-article.centered>h4,
+            dt-article.centered>figure,
+            dt-article.centered>table,
+            dt-article.centered>ol,
+            dt-article.centered>ul,
+            dt-article.centered>dt-byline,
+            dt-article.centered>dt-code,
+            dt-article.centered section>div,
+            dt-article.centered section>p,
+            dt-article.centered section>h2,
+            dt-article.centered section>h3,
+            dt-article.centered section>h4,
+            dt-article.centered section>figure,
+            dt-article.centered section>table,
+            dt-article.cebtered section>ol,
+            dt-article.centered section>ul,
+            dt-article.centered section>dt-byline,
+            dt-article.centered section>dt-code,
+            dt-article section.centered>div,
+            dt-article section.centered>p,
+            dt-article section.centered>h2,
+            dt-article section.centered>h3,
+            dt-article section.centered>h4,
+            dt-article section.centered>figure,
+            dt-article section.centered>table,
+            dt-article section.centered>ol,
+            dt-article section.centered>ul,
+            dt-article section.centered>dt-byline,
+            dt-article section.centered>dt-code {
+                margin-left: auto;
+                margin-right: auto;
+                width: 648px;
+            }
+
+            .centered .l-body-outset,
+            .centered.l-body-outset,
+            dt-article.centered .l-body-outset {
+                margin-left: auto;
+                margin-right: auto;
+                width: calc(648px + 96px);
+            }
+
+            dt-article.centered>h1,
+            dt-article.centered section>h1,
+            dt-article section.centered>h1,
+            .centered .l-middle,
+            .centered.l-middle,
+            dt-article.centered .l-middle {
+                width: 816px;
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+            .centered .l-middle-outset,
+            .centered.l-middle-outset,
+            dt-article.centered .l-middle-outset {
+                width: calc(816px + 96px);
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+            .centered .side.l-body,
+            .centered dt-article .side.l-body {
+                clear: both;
+                float: right;
+                margin-top: 0;
+                margin-left: 48px;
+                margin-right: calc((100vw - 648px) / 2);
+                width: calc(4 * 60px + 3 * 24px);
+            }
+
+            .centered .side.l-body-outset,
+            .centered dt-article .side.l-body-outset {
+                clear: both;
+                float: right;
+                margin-top: 0;
+                margin-left: 48px;
+                margin-right: calc((100vw - 648px) / 2);
+                width: calc(4 * 60px + 3 * 24px);
+            }
+
+            .centered .side.l-middle,
+            .centered dt-article .side.l-middle {
+                clear: both;
+                float: right;
+                width: 396px;
+                margin-left: 48px;
+                margin-right: calc((100vw - 984px) / 2 + 168px / 2);
+            }
+
+            .centered .side.l-middle-outset,
+            .centered dt-article .side.l-middle-outset {
+                clear: both;
+                float: right;
+                width: 456px;
+                margin-left: 48px;
+                margin-right: calc((100vw - 984px) / 2 + 168px);
+            }
+
+            .centered .side.l-page,
+            .centered dt-article .side.l-page {
+                clear: both;
+                float: right;
+                width: 480px;
+                margin-right: calc((100vw - 984px) / 2);
+            }
+
+            .centered .side.l-page-outset,
+            .centered dt-article .side.l-page-outset {
+                clear: both;
+                float: right;
+                width: 480px;
+                margin-right: calc((100vw - 984px) / 2);
+            }
+
+            .centered .l-gutter,
+            .centered.l-gutter,
+            dt-article.centered .l-gutter {
+                clear: both;
+                float: right;
+                margin-top: 0;
+                margin-left: 24px;
+                margin-right: calc((100vw - 984px) / 2);
+                width: calc((984px - 648px) / 2 - 24px);
+            }
+
+        }
+
+        .row {
+            display: flex;
+        }
+
+        .column {
+            flex: 1;
+            box-sizing: border-box;
+            margin-right: 24px;
+            margin-left: 24px;
+        }
+
+        .row>.column:first-of-type {
+            margin-left: 0;
+        }
+
+        .row>.column:last-of-type {
+            margin-right: 0;
+        }
+
+        dt-article {
+            display: block;
+            color: rgba(255, 255, 255, 0.8);
+            font: 17px/1.55em -apple-system, BlinkMacSystemFont, "Roboto", sans-serif;
+            padding-bottom: 72px;
+        }
+
+        @media(min-width: 1024px) {
+            dt-article {
+                font-size: 20px;
+            }
+        }
+
+        /* H1 */
+
+        dt-article h1 {
+            margin-top: 18px;
+            font-weight: 400;
+            font-size: 40px;
+            line-height: 1em;
+            font-family: HoeflerText-Regular, Cochin, Georgia, serif;
+        }
+
+        @media(min-width: 768px) {
+            dt-article h1 {
+                font-size: 46px;
+                margin-top: 48px;
+                margin-bottom: 12px;
+            }
+        }
+
+        @media(min-width: 1080px) {
+            .centered h1 {
+                text-align: center;
+            }
+
+            dt-article h1 {
+                font-size: 50px;
+                letter-spacing: -0.02em;
+            }
+
+            dt-article>h1:first-of-type,
+            dt-article section>h1:first-of-type {
+                margin-top: 80px;
+            }
+        }
+
+
+        @media(min-width: 1200px) {
+            dt-article h1 {
+                font-size: 56px;
+            }
+
+            dt-article>h1:first-of-type {
+                margin-top: 100px;
+            }
+        }
+
+        /* H2 */
+
+        dt-article h2 {
+            font-family: HoeflerText-Regular, Cochin, Georgia, serif;
+            font-weight: 400;
+            font-size: 26px;
+            line-height: 1.25em;
+            margin-top: 36px;
+            margin-bottom: 24px;
+        }
+
+        @media(min-width: 1024px) {
+            dt-article h2 {
+                margin-top: 48px;
+                font-size: 30px;
+            }
+        }
+
+        dt-article h1+h2 {
+            font-weight: 300;
+            font-size: 20px;
+            line-height: 1.4em;
+            margin-top: 8px;
+            font-style: normal;
+        }
+
+
+        @media(min-width: 1080px) {
+            .centered h1+h2 {
+                text-align: center;
+            }
+
+            dt-article h1+h2 {
+                margin-top: 12px;
+                font-size: 24px;
+            }
+        }
+
+        /* H3 */
+
+        dt-article h3 {
+            font-family: HoeflerText-Regular, Georgia, serif;
+            font-weight: 400;
+            font-size: 20px;
+            line-height: 1.4em;
+            margin-top: 36px;
+            margin-bottom: 18px;
+            font-style: italic;
+        }
+
+        dt-article h1+h3 {
+            margin-top: 48px;
+        }
+
+        @media(min-width: 1024px) {
+            dt-article h3 {
+                font-size: 26px;
+            }
+        }
+
+        /* H4 */
+
+        dt-article h4 {
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 14px;
+            line-height: 1.4em;
+        }
+
+        dt-article a {
+            color: inherit;
+        }
+
+        dt-article p,
+        dt-article ul,
+        dt-article ol {
+            margin-bottom: 24px;
+            font-family: Georgia, serif;
+        }
+
+        dt-article p b,
+        dt-article ul b,
+        dt-article ol b {
+            -webkit-font-smoothing: antialiased;
+        }
+
+        dt-article a {
+            border-bottom: 1px solid rgba(0, 0, 0, 0.4);
+            text-decoration: none;
+        }
+
+        dt-article a:hover {
+            border-bottom: 1px solid rgba(0, 0, 0, 0.8);
+        }
+
+        dt-article .link {
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        dt-article ul,
+        dt-article ol {
+            padding-left: 24px;
+        }
+
+        dt-article li {
+            margin-bottom: 24px;
+            margin-left: 0;
+            padding-left: 0;
+        }
+
+        dt-article pre {
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+
+        dt-article hr {
+            border: none;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+            margin-top: 60px;
+            margin-bottom: 60px;
+        }
+
+        dt-article section {
+            margin-top: 60px;
+            margin-bottom: 60px;
+        }
+
+        /* Tables */
+
+        dt-article table {
+            border-collapse: collapse;
+        }
+
+        dt-article table th {
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        dt-article table td {
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        dt-article table th,
+        dt-article table td {
+            font-size: 15px;
+            padding: 2px 0;
+        }
+
+        /* Figure */
+
+        dt-article figure {
+            position: relative;
+            margin-top: 30px;
+            margin-bottom: 30px;
+        }
+
+        @media(min-width: 1024px) {
+            dt-article figure {
+                margin-top: 48px;
+                margin-bottom: 48px;
+            }
+        }
+
+        dt-article figure img {
+            width: 100%;
+        }
+
+        dt-article figure svg text,
+        dt-article figure svg tspan {}
+
+        dt-article figure figcaption {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 12px;
+            line-height: 1.5em;
+        }
+
+        @media(min-width: 1024px) {
+            dt-article figure figcaption {
+                font-size: 13px;
+            }
+        }
+
+        dt-article figure.external img {
+            background: white;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            box-shadow: 0 1px 8px rgba(0, 0, 0, 0.1);
+            padding: 18px;
+            box-sizing: border-box;
+        }
+
+        dt-article figure figcaption a {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        dt-article span.equation-mimic {
+            font-family: georgia;
+            font-size: 115%;
+            font-style: italic;
+        }
+
+        dt-article figure figcaption b {
+            font-weight: 600;
+            color: rgba(255, 255, 255, 1.0);
+        }
+
+        dt-article>dt-code,
+        dt-article section>dt-code {
+            display: block;
+        }
+
+        dt-article .citation {
+            color: #668;
+            cursor: pointer;
+        }
+
+        dt-include {
+            width: auto;
+            display: block;
+        }
+
+        /**
+     * prism.js default theme for JavaScript, CSS and HTML
+     * Based on dabblet (http://dabblet.com)
+     * @author Lea Verou
+     */
+
+        code {
+            white-space: nowrap;
+            background: rgba(0, 0, 0, 0.04);
+            border-radius: 2px;
+            padding: 4px 7px;
+            font-size: 15px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        pre code {
+            display: block;
+            background: white;
+            border-left: 3px solid rgba(0, 0, 0, 0.05);
+            padding: 0 0 0 24px;
+        }
+
+
+        code[class*="language-"],
+        pre[class*="language-"] {
+            text-shadow: 0 1px white;
+            font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+            text-align: left;
+            white-space: pre;
+            word-spacing: normal;
+            word-break: normal;
+            word-wrap: normal;
+            line-height: 1.5;
+
+            -moz-tab-size: 4;
+            -o-tab-size: 4;
+            tab-size: 4;
+
+            -webkit-hyphens: none;
+            -moz-hyphens: none;
+            -ms-hyphens: none;
+            hyphens: none;
+        }
+
+        pre[class*="language-"]::-moz-selection,
+        pre[class*="language-"] ::-moz-selection,
+        code[class*="language-"]::-moz-selection,
+        code[class*="language-"] ::-moz-selection {
+            text-shadow: none;
+            background: #b3d4fc;
+        }
+
+        pre[class*="language-"]::selection,
+        pre[class*="language-"] ::selection,
+        code[class*="language-"]::selection,
+        code[class*="language-"] ::selection {
+            text-shadow: none;
+            background: #b3d4fc;
+        }
+
+        @media print {
+
+            code[class*="language-"],
+            pre[class*="language-"] {
+                text-shadow: none;
+            }
+        }
+
+        /* Code blocks */
+        pre[class*="language-"] {
+            overflow: auto;
+        }
+
+        :not(pre)>code[class*="language-"],
+        pre[class*="language-"] {}
+
+        /* Inline code */
+        :not(pre)>code[class*="language-"] {
+            white-space: normal;
+        }
+
+        .token.comment,
+        .token.prolog,
+        .token.doctype,
+        .token.cdata {
+            color: slategray;
+        }
+
+        .token.punctuation {
+            color: #999;
+        }
+
+        .namespace {
+            opacity: .7;
+        }
+
+        .token.property,
+        .token.tag,
+        .token.boolean,
+        .token.number,
+        .token.constant,
+        .token.symbol,
+        .token.deleted {
+            color: #905;
+        }
+
+        .token.selector,
+        .token.attr-name,
+        .token.string,
+        .token.char,
+        .token.builtin,
+        .token.inserted {
+            color: #690;
+        }
+
+        .token.operator,
+        .token.entity,
+        .token.url,
+        .language-css .token.string,
+        .style .token.string {
+            color: #a67f59;
+            background: hsla(0, 0%, 100%, .5);
+        }
+
+        .token.atrule,
+        .token.attr-value,
+        .token.keyword {
+            color: #07a;
+        }
+
+        .token.function {
+            color: #DD4A68;
+        }
+
+        .token.regex,
+        .token.important,
+        .token.variable {
+            color: #e90;
+        }
+
+        .token.important,
+        .token.bold {
+            font-weight: bold;
+        }
+
+        .token.italic {
+            font-style: italic;
+        }
+
+        .token.entity {
+            cursor: help;
+        }
+
+        @media print {
+            @page {
+                size: 8in 11in;
+            }
+
+            html {}
+
+            p,
+            code {
+                page-break-inside: avoid;
+            }
+
+            h2,
+            h3 {
+                page-break-after: avoid;
+            }
+
+            dt-header {
+                visibility: hidden;
+            }
+
+            dt-footer {
+                display: none !important;
+            }
+        }
+    </style>
+
+    <title>t-SNE Playground</title>
+</head>
+
+<body>
+    <dt-include src="assets/tray.html">
+        <style>
+            #tray-container {
+                width: 100%;
+                position: fixed;
+                top: 0;
+                left: 0;
+                z-index: 100;
+                top: -410px;
+                transition: top 0.3s;
+            }
+
+            #tray {
+                position: relative;
+                border: 2px solid steelblue;
+                background: white;
+                padding: 24px 24px 60px 24px;
+                box-shadow: 0px 2px 24px rgba(0, 0, 0, 0.2);
+                box-sizing: border-box;
+                margin: 0 auto;
+                height: 380px;
+                display: flex;
+                justify-content: center;
+                max-width: 700px;
+                border-radius: 4px;
+            }
+
+            #tray-container.modal {
+                top: -4px;
+            }
+
+            #tray-content {
+                width: 55%;
+                height: 100%;
+                font-size: 12px;
+                position: relative;
+                top: -12px;
+            }
+
+            #tray-content canvas {
+                width: 100%;
+            }
+
+            #tray-options {
+                padding-left: 36px;
+                font-size: 13px;
+                line-height: 1.5em;
+                height: 100%;
+                width: 45%;
+            }
+
+            #tray-options #tray-controls {
+                margin-bottom: 24px;
+                display: flex;
+                align-items: center;
+            }
+
+            #tray-controls button {
+                cursor: pointer;
+                outline: none;
+                border-radius: 50%;
+                background: steelblue;
+                color: white;
+                width: 48px;
+                height: 48px;
+                border: none;
+                margin-right: 12px;
+                font-variant: normal;
+            }
+
+            #tray-controls .play-pause i {
+                display: none;
+                font-size: 30px;
+            }
+
+            #tray-controls .play-pause.paused i:nth-child(1) {
+                display: block;
+            }
+
+            #tray-controls .play-pause.playing i:nth-child(2) {
+                display: block;
+            }
+
+            #tray-steps-display {
+                text-align: center;
+                width: 48px;
+                font-size: 15px;
+            }
+
+            #tray input {
+                margin-bottom: 12px;
+                margin-left: -2px;
+            }
+
+            #tray-data-sliders {}
+
+            #tray-tsne-sliders {}
+
+            #tray-close {
+                cursor: pointer;
+                outline: none;
+                background: white;
+                border: none;
+                text-align: center;
+                position: absolute;
+                bottom: 0;
+                width: 100%;
+                padding: 6px 0;
+                background: #f0f4f5;
+                opacity: 0.6;
+                color: steelblue;
+                left: 0;
+            }
+
+            #tray-close:hover {
+                opacity: 1;
+            }
+        </style>
+        <div id="tray-container">
+            <div id="tray">
+                <div id="tray-content">
+                    <canvas width="400" height="400"></canvas>
+                </div>
+
+                <div id="tray-options">
+                    <div id="tray-controls">
+                        <button class="play-pause">
+                            O
+                        </button>
+                        <button class="restart">
+                            X
+                        </button>
+                        <div id="tray-steps-display">
+                            Step: <br> <span class="step"></span>
+                        </div>
+                    </div>
+                    <div id="tray-data-sliders"></div>
+                    <div id="tray-tsne-sliders"></div>
+                </div>
+                <button id="tray-close"><i class="material-icons">expand_less</i></button>
+            </div>
+        </div>
+        <script>
+            // This depends on playground.js having setup the GLOBAL object
+            function runTrayState() {
+                // Set up t-SNE and start it running.
+                var state = GLOBALS.trayState;
+                var points = state.demo.generator.apply(null, state.demoParams);
+                var canvas = d3.select("#tray-content canvas").node()
+
+                // if there was already a playground demo going, lets destroy it and make a new one
+                if (GLOBALS.trayDemo) {
+                    GLOBALS.trayDemo.destroy();
+                    delete GLOBALS.trayDemo;
+                }
+                GLOBALS.trayDemo = demoMaker(points, canvas, state, function (step) {
+                    d3.select("#tray-controls .step").text(step);
+                    if (step >= state.stepLimit && !GLOBALS.trayUnpausedBefore) {
+                        setTrayRunning(false)
+                    }
+                })
+
+                GLOBALS.trayUnpausedBefore = false;
+                setTrayRunning(true);
+            }
+
+            function updateTraySliders() {
+                // we regenerate all the sliders from scratch
+                // we modify the global tray state when a slider is modified
+                var state = GLOBALS.trayState;
+                var dataSliders = d3.select('#tray-data-sliders');
+                dataSliders.html('');
+                state.demo.options.map(function (option, i) {
+                    var value = state.demoParams[i];
+                    var slider = makeTraySlider(dataSliders.node(), option.name,
+                        option.min, option.max, value,
+                        function () {
+                            // when this one updates we change the appropriate state
+                            GLOBALS.trayState.demoParams[i] = +slider.value
+                            runTrayState();
+                        });
+                });
+
+                var tsneSliders = d3.select('#tray-tsne-sliders');
+                tsneSliders.html('');
+                var perpSlider = makeTraySlider(tsneSliders.node(), "Perplexity",
+                    1, 100, state.perplexity,
+                    function () {
+                        GLOBALS.trayState.perplexity = perpSlider.value
+                        runTrayState();
+                    });
+
+                var epsSlider = makeTraySlider(tsneSliders.node(), "Epsilon",
+                    1, 20, state.epsilon,
+                    function () {
+                        GLOBALS.trayState.epsilon = epsSlider.value
+                        runTrayState();
+                    });
+
+            }
+
+            function makeTraySlider(container, name, min, max, start, changeCallback) {
+                var dis = d3.select(container)
+                dis.append("span").classed("slider-label-" + name, true)
+                    .text(name + ' ')
+                var value = dis.append("span").classed("slider-value-" + name, true)
+                    .text(start)
+
+                var slider = dis.append("input")
+                    .attr("type", "range")
+                    .attr("min", min)
+                    .attr("max", max)
+                    .attr("value", start)
+                    .on("change", changeCallback)
+                    .on("input", function () {
+                        value.text(slider.node().value);
+                    })
+                return slider.node();
+            }
+
+            /* Activate the tray */
+            function updateStateFromFigure(figure, example, el) {
+                var y = el.getBoundingClientRect().top;
+                var demo = demosByName[figure.dataset];
+                var state = {
+                    demo: demos[demo.index],
+                    demoParams: figure.params.map(function (d) {
+                        return d
+                    }),
+                    perplexity: example.perplexity,
+                    epsilon: example.epsilon,
+                    stepLimit: example.step
+                }
+                GLOBALS.trayState = state;
+                runTrayState()
+                updateTraySliders()
+                d3.select("#tray-container").classed("modal", true)
+                GLOBALS.trayOpen = true;
+            }
+
+            d3.select("body").on("keydown", function () {
+                if (d3.event.keyCode === 27) {
+                    setTrayRunning(false)
+                    d3.select("#tray-container").classed("modal", false);
+                    d3.selectAll(".runner").classed("selected", false);
+                }
+            })
+            d3.select("#tray-close").on("click", function () {
+                setTrayRunning(false);
+                GLOBALS.trayOpen = false;
+                d3.select("#tray-container").classed("modal", false)
+                d3.selectAll(".runner").classed("selected", false);
+            })
+
+            /* Tray Controls */
+            var trayPlay = d3.select("#tray-controls .play-pause")
+
+            function setTrayRunning(r) {
+                GLOBALS.running = r;
+                if (GLOBALS.running) {
+                    GLOBALS.trayDemo.unpause();
+                    trayPlay
+                        .classed("playing", true)
+                        .classed("paused", false);
+                } else {
+                    GLOBALS.trayDemo.pause();
+                    trayPlay
+                        .classed("playing", false)
+                        .classed("paused", true);
+                }
+            }
+
+            // Hook up play / pause / restart buttons.
+            trayPlay.on("click", function () {
+                GLOBALS.trayUnpausedBefore = true;
+                setTrayRunning(!GLOBALS.running);
+            });
+
+            var trayRestart = d3.select("#tray-controls .restart")
+                .on("click", function () {
+                    runTrayState();
+                })
+
+            d3.select(window).on("scroll.tray", function () {
+                if (GLOBALS.trayOpen) {
+                    if (scrollY < 1000) {
+                        setTrayRunning(false);
+                        GLOBALS.trayOpen = false;
+                        d3.select("#tray-container").classed("modal", false);
+                        d3.selectAll(".runner").classed("selected", false);
+                    }
+                }
+            });
+            /* Tray sliders */
+        </script>
+    </dt-include>
+
+    <dt-article>
+        <div class="l-page">
+            <dt-include src="assets/playground.html">
+                <style>
+                    #playground {
+                        overflow: hidden;
+                        font-family: 'Open Sans', sans-serif;
+                        margin-top: 36px;
+                        padding: 36px 0 0 0;
+                        z-index: 1000;
+                    }
+
+                    #playground * {
+                        box-sizing: border-box;
+                    }
+
+                    #playground.modal {
+                        position: fixed;
+                        left: 10px;
+                        right: 10px;
+                        top: 50px;
+                    }
+
+                    /* Playground Canvas */
+                    #playground-canvas {
+                        float: left;
+                        width: 55%;
+                    }
+
+                    #playground-canvas canvas {
+                        width: 100%;
+                    }
+
+                    /* Data Menu */
+                    #data-menu {
+                        /*float: left;*/
+                        /*width: 25%*/
+                        width: 40%;
+                        float: left;
+                        margin-bottom: 24px;
+                        overflow: hidden;
+                        margin-left: 5%;
+                    }
+
+                    #data-menu .demo-data {
+                        cursor: pointer;
+                        position: relative;
+                        font-size: 10px;
+                        line-height: 1.2em;
+                        box-sizing: border-box;
+                        float: left;
+                        margin: 2px;
+                        padding: 4px;
+                        width: calc(33% - 4px);
+                        background: white;
+                        border: 1px solid rgba(0, 0, 0, 0.1);
+                        border-radius: 4px;
+                        box-shadow: 0 0 3px rgba(0, 0, 0, 0.08);
+                    }
+
+                    @media(min-width: 480px) {
+                        #data-menu .demo-data {
+                            width: calc(25% - 8px);
+                            padding: 8px;
+                            margin: 4px;
+                        }
+                    }
+
+                    @media(min-width: 768px) {
+                        #data-menu .demo-data {
+                            width: calc(16.5% - 8px);
+                            padding: 8px;
+                            margin: 4px;
+                        }
+                    }
+
+                    #data-menu .demo-data:hover {
+                        border: 1px solid rgba(0, 0, 0, 0.2);
+
+                    }
+
+                    #data-menu .demo-data.selected::after {
+                        content: "";
+                        border: 2px solid rgba(70, 130, 180, 0.8);
+                        width: 100%;
+                        height: 100%;
+                        position: absolute;
+                        top: 0;
+                        left: 0;
+                        box-sizing: border-box;
+                        border-radius: 4px;
+                    }
+
+                    #data-menu .demo-data span {
+                        display: none;
+                    }
+
+                    #data-menu .demo-data:hover canvas {
+                        opacity: 1;
+                    }
+
+                    #data-menu .demo-data canvas {
+                        width: 100%;
+                        opacity: 0.3;
+                    }
+
+                    #data-menu .demo-data.selected canvas {
+                        opacity: 1;
+                    }
+
+                    /* Data Details */
+                    #data-details {
+                        position: relative;
+                    }
+
+                    @media(min-width: 768px) {
+                        #data-details {
+                            width: 40%;
+                            float: right;
+                        }
+                    }
+
+                    #data-details #data-controls {
+                        width: 40%;
+                        float: right;
+                        position: relative;
+                        overflow: hidden;
+                        font-size: 13px;
+                    }
+
+                    @media(min-width: 768px) {
+                        #data-details #data-controls {
+                            width: 50%;
+                            margin-right: 10%;
+                            float: left;
+                        }
+                    }
+
+                    #data-details #play-controls {
+                        margin-bottom: 18px;
+                        overflow: hidden;
+                        position: relative;
+                    }
+
+                    #data-details #play-controls button {
+                        cursor: pointer;
+                        outline: none;
+                        border-radius: 50%;
+                        background: steelblue;
+                        color: white;
+                        width: 25%;
+                        margin-right: 5%;
+                        padding-top: 25%;
+                        padding-bottom: 0;
+                        border: none;
+                        float: left;
+                        position: relative;
+                    }
+
+                    #play-controls i {
+                        display: block;
+                        position: absolute;
+                        top: 50%;
+                        left: 0;
+                        width: 100%;
+                        height: 36px;
+                        font-size: 24px;
+                        line-height: 0;
+                    }
+
+                    @media(min-width: 768px) {
+                        #play-controls i {
+                            font-size: 30px;
+                        }
+                    }
+
+                    #play-controls #play-pause i {
+                        display: none;
+                        position: absolute;
+                    }
+
+                    #play-controls #play-pause.paused i:nth-child(1) {
+                        display: block;
+                    }
+
+                    #play-controls #play-pause.playing i:nth-child(2) {
+                        display: block;
+                    }
+
+                    #steps-display {
+                        float: left;
+                        text-align: center;
+                        width: 25%;
+                        line-height: 1.5em;
+                        font-size: 13px;
+                    }
+
+                    @media(min-width: 1024px) {
+                        #steps-display {
+                            font-size: 16px;
+                            line-height: 1.6em;
+                        }
+                    }
+
+                    #data-details #data-description {
+                        width: 50%;
+                        margin-right: 10%;
+                        float: right;
+                        font-size: 14px;
+                        line-height: 1.6em;
+                    }
+
+                    @media(min-width: 768px) {
+                        #data-details #data-description {
+                            width: 40%;
+                            float: left;
+                            margin-right: 0;
+                        }
+                    }
+
+                    /* Options */
+                    #data-details #options {
+                        float: left;
+                        padding-left: 36px;
+                        font-size: 13px;
+                        line-height: 1.5em;
+                        width: 45%;
+                    }
+
+                    #data-details input {
+                        display: block;
+                        width: 100%;
+                        margin: 8px 0 16px 0;
+                    }
+
+                    #options #data-options {
+                        width: 45%;
+                        margin-left: 4px;
+                    }
+
+                    #options #tsne-options {
+                        width: 45%;
+                        margin-left: 4px;
+                    }
+
+                    #data-details #share {
+                        margin-top: 8px;
+                        display: block;
+                        color: rgba(255, 255, 255, 0.4);
+                        text-decoration: none;
+                        font-size: 12px;
+                    }
+
+                    #data-details #share:hover {
+                        text-decoration: underline;
+                    }
+
+                    #data-details #share i {
+                        line-height: 0px;
+                        position: relative;
+                        top: 7px;
+                    }
+                </style>
+                <div id="playground">
+
+                    <div id="playground-canvas">
+                        <canvas id="output" width="600" height="600"></canvas>
+                    </div>
+
+                    <div id="data-menu"></div>
+
+                    <div id="data-details">
+                        <div id="data-controls">
+                            <div id="play-controls">
+                                <button id="play-pause">
+                                    <i class="material-icons">O</i>
+                                    <i class="material-icons">O</i>
+                                </button>
+                                <button id="restart">
+                                    <i class="material-icons">X</i>
+                                </button>
+                                <div id="steps-display">
+                                    Step<br><span id="step"></span>
+                                </div>
+                            </div>
+                            <div id="data-options"></div>
+                            <div id="tsne-options"></div>
+                        </div>
+                    </div>
+
+
+                </div>
+                <script src="assets/playground.js"></script>
+            </dt-include>
+        </div>
+        <dt-byline>
+            <style>
+                dt-byline {
+                    font-size: 12px;
+                    line-height: 18px;
+                    display: block;
+                    border-top: 1px solid rgba(0, 0, 0, 0.1);
+                    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+                    color: rgba(255, 255, 255, 0.5);
+                    padding-top: 12px;
+                    padding-bottom: 12px;
+                }
+
+                dt-article.centered dt-byline {
+                    text-align: center;
+
+                }
+
+                dt-byline a,
+                dt-article dt-byline a {
+                    text-decoration: none;
+                    border-bottom: none;
+                }
+
+                dt-article dt-byline a:hover {
+                    text-decoration: underline;
+                    border-bottom: none;
+                }
+
+                dt-byline .authors {
+                    text-align: left;
+                }
+
+                dt-byline .name {
+                    display: inline;
+                    text-transform: uppercase;
+                }
+
+                dt-byline .affiliation {
+                    display: inline;
+                }
+
+                dt-byline .date {
+                    display: block;
+                    text-align: left;
+                }
+
+                dt-byline .year,
+                dt-byline .month {
+                    display: inline;
+                }
+
+                dt-byline .citation {
+                    display: block;
+                    text-align: left;
+                }
+
+                dt-byline .citation div {
+                    display: inline;
+                }
+
+                @media(min-width: 768px) {
+                    dt-byline {}
+                }
+
+                @media(min-width: 1080px) {
+                    dt-byline {
+                        border-bottom: none;
+                        margin-bottom: 70px;
+                    }
+
+                    dt-byline a:hover {
+                        color: rgba(255, 255, 255, 0.9);
+                    }
+
+                    dt-byline .authors {
+                        display: inline-block;
+                    }
+
+                    dt-byline .author {
+                        display: inline-block;
+                        margin-right: 12px;
+                        /*padding-left: 20px;*/
+                        /*border-left: 1px solid #ddd;*/
+                    }
+
+                    dt-byline .affiliation {
+                        display: block;
+                    }
+
+                    dt-byline .author:last-child {
+                        margin-right: 0;
+                    }
+
+                    dt-byline .name {
+                        display: block;
+                    }
+
+                    dt-byline .date {
+                        border-left: 1px solid rgba(0, 0, 0, 0.1);
+                        padding-left: 15px;
+                        margin-left: 15px;
+                        display: inline-block;
+                    }
+
+                    dt-byline .year,
+                    dt-byline .month {
+                        display: block;
+                    }
+
+                    dt-byline .citation {
+                        border-left: 1px solid rgba(0, 0, 0, 0.15);
+                        padding-left: 15px;
+                        margin-left: 15px;
+                        display: inline-block;
+                    }
+
+                    dt-byline .citation div {
+                        display: block;
+                    }
+                }
+            </style>
+
+
+            <div class="byline">
+                <div class="authors">
+                    <div class="author">
+                        <a class="name" href="http://hint.fm/">Martin Wattenberg</a>
+                        <a class="affiliation" href="http://g.co/brain">Google Brain</a>
+                    </div>
+                    <div class="author">
+                        <a class="name" href="http://hint.fm/">Fernanda Viégas</a>
+                        <a class="affiliation" href="http://g.co/brain">Google Brain</a>
+                    </div>
+                    <div class="author">
+                        <a class="name" href="http://enjalot.github.io/">Ian Johnson</a>
+                        <a class="affiliation" href="http://cloud.google.com">Google Cloud</a>
+                    </div>
+                </div>
+                <div class="date">
+                    <div class="month">Oct. 13</div>
+                    <div class="year">2016</div>
+                </div>
+                <a class="citation" href="#citation">
+                    <div>Citation:</div>
+                    <div>Wattenberg, et al., 2016</div>
+                </a>
+            </div>
+        </dt-byline>
+
+    </dt-article>
+
+    <style>
+        dt-cite {
+            color: hsla(206, 90%, 20%, 0.7);
+        }
+
+        dt-cite .citation-number {
+            cursor: default;
+            white-space: nowrap;
+            font-family: -apple-system, BlinkMacSystemFont, "Roboto", Helvetica, sans-serif;
+            font-size: 75%;
+            color: hsla(206, 90%, 20%, 0.7);
+            display: inline-block;
+            line-height: 1.1em;
+            text-align: center;
+            position: relative;
+            top: -2px;
+            margin: 0 2px;
+        }
+
+        figcaption dt-cite .citation-number {
+            font-size: 11px;
+            font-weight: normal;
+            top: -2px;
+            line-height: 1em;
+        }
+    </style>
+    <div id="footnote-hover-boxes-container"></div>
+    <script>
+        function nodeFromString(str) {
+            var div = document.createElement("div");
+            div.innerHTML = str;
+            return div.firstChild;
+        }
+
+        function make_hover_css(pos) {
+            var pretty = window.innerWidth > 600;
+            var padding = pretty ? 18 : 12;
+            var outer_padding = pretty ? 18 : 0;
+            var bbox = document.querySelector("body").getBoundingClientRect();
+            var left = pos[0] - bbox.left,
+                top = pos[1] - bbox.top;
+            var width = Math.min(window.innerWidth - 2 * outer_padding, 648);
+            left = Math.min(left, window.innerWidth - width - outer_padding);
+            width = width - 2 * padding;
+            return (`position: absolute;
+         background-color: #FFF;
+         opacity: 0.95;
+         max-width: ${width}px;
+         top: ${top}px;
+         left: ${left}px;
+         border: 1px solid rgba(0, 0, 0, 0.25);
+         padding: ${padding}px;
+         border-radius: ${pretty? 3 : 0}px;
+         box-shadow: 0px 2px 10px 2px rgba(0, 0, 0, 0.2);
+         z-index: ${1e6};`);
+        }
+
+
+        function DtHoverBox(div_id) {
+            this.div = document.querySelector("#" + div_id);
+            this.visible = false;
+            this.bindDivEvents();
+            DtHoverBox.box_map[div_id] = this;
+        }
+
+        DtHoverBox.box_map = {};
+
+        DtHoverBox.get_box = function get_box(div_id) {
+            if (div_id in DtHoverBox.box_map) {
+                return DtHoverBox.box_map[div_id];
+            } else {
+                return new DtHoverBox(div_id);
+            }
+        }
+
+        DtHoverBox.prototype.show = function show(pos) {
+            this.visible = true;
+            this.div.setAttribute("style", make_hover_css(pos));
+            for (var box_id in DtHoverBox.box_map) {
+                var box = DtHoverBox.box_map[box_id];
+                if (box != this) box.hide();
+            }
+        }
+
+        DtHoverBox.prototype.showAtNode = function showAtNode(node) {
+            var bbox = node.getBoundingClientRect();
+            this.show([bbox.right, bbox.bottom]);
+        }
+
+        DtHoverBox.prototype.hide = function hide() {
+            this.visible = false;
+            if (this.div) this.div.setAttribute("style", "display:none");
+            if (this.timeout) clearTimeout(this.timeout);
+        }
+
+        DtHoverBox.prototype.stopTimeout = function stopTimeout() {
+            if (this.timeout) clearTimeout(this.timeout);
+        }
+
+        DtHoverBox.prototype.extendTimeout = function extendTimeout(T) {
+            //console.log("extend", T)
+            var this_ = this;
+            this.stopTimeout();
+            this.timeout = setTimeout(function () {
+                this_.hide();
+            }.bind(this), T);
+        }
+
+        // Bind events to a link to open this box
+        DtHoverBox.prototype.bind = function bind(node) {
+            if (typeof node == "string") {
+                node = document.querySelector(node);
+            }
+
+            node.addEventListener("mouseover", function () {
+                if (!this.visible) this.showAtNode(node);
+                this.stopTimeout();
+            }.bind(this));
+
+            node.addEventListener("mouseout", function () {
+                this.extendTimeout(250);
+            }.bind(this));
+
+            node.addEventListener("touchstart", function (e) {
+                if (this.visible) {
+                    this.hide();
+                } else {
+                    this.showAtNode(node);
+                }
+                // Don't trigger body touchstart event when touching link
+                e.stopPropagation();
+            }.bind(this));
+        }
+
+        DtHoverBox.prototype.bindDivEvents = function bindDivEvents() {
+            // For mice, same behavior as hovering on links
+            this.div.addEventListener("mouseover", function () {
+                if (!this.visible) this.showAtNode(node);
+                this.stopTimeout();
+            }.bind(this));
+            this.div.addEventListener("mouseout", function () {
+                this.extendTimeout(250);
+            }.bind(this));
+
+            // Don't trigger body touchstart event when touching within box
+            this.div.addEventListener("touchstart", function (e) {
+                e.stopPropagation();
+            });
+            // Close box when touching outside box
+            document.body.addEventListener("touchstart", function () {
+                this.hide();
+            }.bind(this));
+        }
+
+        var hover_es = document.querySelectorAll("span[data-hover-ref]");
+        hover_es = [].slice.apply(hover_es);
+        hover_es.forEach(function (e, n) {
+            var ref_id = e.getAttribute("data-hover-ref");
+            DtHoverBox.get_box(ref_id).bind(e);
+        })
+    </script>
+
+</body>
+
+</html>
